@@ -1,25 +1,6 @@
 version: '3.7'
 
 services:
-  api:
-    container_name: api
-    build:
-      context: .
-      target: development
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - ${SERVER_PORT}:${SERVER_PORT}
-      - 9229:9229
-    command: npm run start:dev
-    env_file:
-      - .env
-    networks:
-      - webnet
-    depends_on:
-      - redis
-      - postgres
   redis:
     container_name: redis
     image: redis:5
@@ -45,3 +26,4 @@ networks:
   webnet:
 volumes:
   pgdata:
+  node_modules:
