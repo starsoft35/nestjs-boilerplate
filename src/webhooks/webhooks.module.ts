@@ -1,5 +1,6 @@
 import { Webhook } from './entities/webhook.entity';
-import { HttpModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { WebhooksService } from './webhooks.service';
 import { WebhooksController } from './webhooks.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';

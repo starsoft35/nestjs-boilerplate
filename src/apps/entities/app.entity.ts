@@ -6,13 +6,16 @@ export class App {
   id: number;
 
   @Column()
+  accountId: number;
+
+  @Column()
   name: string;
 
   @Column()
   clientId: string;
 
   @Column()
-  appUrl: string;
+  originUrl: string;
 
   @Column()
   secretToken: string;

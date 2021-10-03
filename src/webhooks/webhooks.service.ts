@@ -1,4 +1,5 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Webhook } from './entities/webhook.entity';
 import { CreateWebhookDto } from './dto/create-webhook.dto';
@@ -48,8 +49,7 @@ export class WebhooksService {
 
     if (webhook.length && webhook[0].callbackUrl) {
       return this.httpService
-        .post(webhook[0].callbackUrl, { webhook: name, payload })
-        .toPromise();
+        .post(webhook[0].callbackUrl, { webhook: name, payload });
     }
   }
 }
