@@ -19,6 +19,13 @@ import { UsersService } from './users.service';
     update: UserCreateDto,
     replace: UserCreateDto,
   },
+  query:{
+    join:{
+      account: {
+        eager: true,
+      }
+    }
+  }
 })
 @Controller('users')
 export class UsersController implements CrudController<User> {
