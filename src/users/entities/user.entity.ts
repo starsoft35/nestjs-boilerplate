@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, JoinColumn, ManyToOne, BeforeUpdate } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, BaseEntity, RelationId } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Account } from './../../accounts/entities/account.entity';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -38,6 +38,9 @@ export class User {
 
   @Column({ default: false })
   isEmailConfirmed: boolean;
+
+  @RelationId((user: User) => user.account)
+  accountId: Number;
 
   @ManyToOne(() => Account, account => account.users)
   account: Account;
