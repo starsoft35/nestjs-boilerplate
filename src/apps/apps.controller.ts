@@ -19,6 +19,13 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
     update: UpdateAppDto,
     replace: UpdateAppDto,
   },
+  query: {
+    join: {
+      account: {
+        eager: true,
+      }
+    }
+  }
 })
 @Controller('apps')
 export class AppsController implements CrudController<App> {

@@ -1,18 +1,12 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Crud } from '@nestjsx/crud';
+import { OnEvent } from '@nestjs/event-emitter';
+import { AuthGuard } from '../auth/guards/auth.guard';
 import { WebhooksService } from './webhooks.service';
 import { CreateWebhookDto } from './dto/create-webhook.dto';
-import { Roles } from 'src/roles.decorator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { OnEvent } from '@nestjs/event-emitter';
 import { WebhookEvent } from './events/webhook.event';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Webhook } from './entities/webhook.entity';
 
 /**
  * App are used for developers
@@ -20,35 +14,32 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 @ApiTags('Webhooks')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
+@Crud({
+  model: {
+    type: Webhook,
+  },
+  dto: {
+    create: CreateWebhookDto,
+    update: CreateWebhookDto,
+    replace: CreateWebhookDto,
+  },
+  query: {
+    join: {
+      account: {
+        eager: true,
+      }
+    }
+  }
+})
 @Controller('webhooks')
 export class WebhooksController {
-  constructor(
-    private readonly webhooksService: WebhooksService,
-  ) {}
-
-  /**
-   * Create an Webhook setup
-   */
-  @Roles('admin')
-  @Post()
-  createOrUpdate(@Body() createWebhookDto: CreateWebhookDto, @Request() req) {
-    return this.webhooksService.createOrUpdate(createWebhookDto, req.user);
-  }
-
-  /**
-   * Get all Webhook setups
-   */
-  @Roles('admin')
-  @Get()
-  findAll() {
-    return this.webhooksService.findAll();
-  }
+  constructor(public service: WebhooksService) {}
 
   /**
    * Trigger webhook callback
    */
   @OnEvent('webhook')
   async triggerWebhook(event: WebhookEvent) {
-    return this.webhooksService.callWebhook(event);
+    return this.service.callWebhook(event);
   }
 }

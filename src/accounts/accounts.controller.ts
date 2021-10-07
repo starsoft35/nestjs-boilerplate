@@ -23,6 +23,12 @@ import { UpdateAccountDto } from './dto/update-account.dto';
     join: {
       users: {
         eager: true,
+      },
+      apps: {
+        eager: true,
+      },
+      webhooks: {
+        eager: true,
       }
     }
   }

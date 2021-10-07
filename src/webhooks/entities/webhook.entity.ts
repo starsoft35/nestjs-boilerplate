@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
+import { Account } from 'src/accounts/entities/account.entity';
+import { Entity, Column, PrimaryGeneratedColumn, Index, BaseEntity, RelationId, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Webhook {
+export class Webhook extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,7 +13,10 @@ export class Webhook {
   @Column()
   callbackUrl: string;
 
-  @Index()
   @Column()
-  accountId: number;
+  @RelationId((webhook: Webhook) => webhook.account)
+  accountId: Number;
+
+  @ManyToOne(() => Account, account => account.webhooks)
+  account: Account;
 }

@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common'
 import { Observable } from 'rxjs';
 import { AppsService } from 'src/apps/apps.service';
-import { Like } from 'typeorm';
 import { JwtAuthGuard } from './jwt-auth.guard'
 
 @Injectable()
@@ -21,7 +20,7 @@ export class AuthGuard extends JwtAuthGuard implements CanActivate {
       return this.appsService.findOne({
         where: {
           clientId: request.query.clientId,
-          originUrl: Like(request.hostname.split('/')[0])
+          originUrl: request.hostname.split('/')[0]
         }
       })
       .then((res) => Boolean(res))

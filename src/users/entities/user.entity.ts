@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, BaseEntity, RelationId } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, BaseEntity, RelationId, AfterUpdate } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Account } from './../../accounts/entities/account.entity';
 
@@ -21,6 +21,7 @@ export class User extends BaseEntity {
   @Column({ default: false })
   twoFactor: boolean;
 
+  @Exclude()
   @Column({ nullable: true })
   twoFactorAuthenticationSecret: string;
 
@@ -40,7 +41,8 @@ export class User extends BaseEntity {
   isEmailConfirmed: boolean;
 
   @RelationId((user: User) => user.account)
-  accountId: Number;
+  @Column({ nullable: true })
+  accountId: number;
 
   @ManyToOne(() => Account, account => account.users)
   account: Account;

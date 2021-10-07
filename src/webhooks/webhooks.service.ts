@@ -1,55 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
+import { lastValueFrom } from 'rxjs';
 import { Webhook } from './entities/webhook.entity';
-import { CreateWebhookDto } from './dto/create-webhook.dto';
-import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
 import { WebhookEvent } from './events/webhook.event';
 
 @Injectable()
-export class WebhooksService {
+export class WebhooksService extends TypeOrmCrudService<Webhook> {
   constructor(
-    @InjectRepository(Webhook)
-    private webhookRepository: Repository<Webhook>,
+    @InjectRepository(Webhook) repo,
     private httpService: HttpService,
-  ) {}
-
-  async createOrUpdate(createWebhookDto: CreateWebhookDto, user: User) {
-    const newWebhook = await this.webhookRepository.save({
-      ...createWebhookDto,
-      accountId: 1,
-    });
-
-    return this.webhookRepository.save(newWebhook);
-  }
-
-  findAll() {
-    return this.webhookRepository.find();
-  }
-
-  async findOne({ name, accountId }) {
-    const webhook = await this.webhookRepository.find({
-      where: {
-        name,
-        accountId,
-      },
-    });
-
-    return webhook.length ? webhook[0] : undefined;
+  ) {
+    super(repo);
   }
 
   async callWebhook({ name, accountId, payload }: WebhookEvent) {
-    const webhook = await this.webhookRepository.find({
-      where: {
-        name,
-        accountId,
-      },
+    const webhook = await this.repo.findOne({
+      where: { name, accountId },
     });
 
-    if (webhook.length && webhook[0].callbackUrl) {
-      return this.httpService
-        .post(webhook[0].callbackUrl, { webhook: name, payload });
+    if (webhook && webhook.callbackUrl) {
+      const res = this.httpService.post(webhook.callbackUrl, { webhook: name, payload })
+      return lastValueFrom(res)
     }
   }
 }

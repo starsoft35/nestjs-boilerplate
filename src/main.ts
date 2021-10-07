@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
-import { setupAdminPanel } from './admin-panel/admin-panel.plugin';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -22,9 +20,6 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api');
-
-  /** Setup Admin panel */
-  await setupAdminPanel(app);
 
   await app.listen(3000);
 }

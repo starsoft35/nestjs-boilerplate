@@ -1,11 +1,11 @@
 import { AppsModule } from './../apps/apps.module';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from '../users/users.module';
+import { AppMailerModule } from '../mailer/mailer.module';
 import { AuthService } from './auth.service';
-import { jwtConstants } from './auth.constants';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -13,12 +13,17 @@ import { LocalStrategy } from './strategies/local.strategy';
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    AppMailerModule,
     UsersModule,
     PassportModule,
     AppsModule,
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { expiresIn: configService.get('JWT_EXPIRES') },
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],

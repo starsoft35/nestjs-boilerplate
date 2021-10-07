@@ -12,7 +12,7 @@ export class UsersService extends TypeOrmCrudService<User> {
   }
 
   async registerUser(registerDto: RegisterDto) {
-    const result = await this.findByEmail(registerDto.email)
+    const result = await this.findOne({ where: { email: registerDto.email }})
 
     if (result) {
       throw new ConflictException();
@@ -26,14 +26,21 @@ export class UsersService extends TypeOrmCrudService<User> {
     }
   }
 
-  async findByEmail(email: string) {
-    const users = await this.repo.find({ where: { email } })
-    return users.length ? users[0] : null
+  set2FASecret(userId: number, secret: string) {
+    return this.repo.update(userId, { twoFactorAuthenticationSecret: secret });
   }
 
-  async set2FASecret(secret: string, userId: number) {
-    return this.repo.update(userId, {
-      twoFactorAuthenticationSecret: secret,
-    });
+  confirmUserEMail(userId: number) {
+    return this.repo.update(userId, { isEmailConfirmed: true });
   }
 }
+
+
+// this.eventEmitter.emit(
+//   'webhook',
+//   new WebhookEvent({
+//     name: 'user.getAll',
+//     accountId: 1,
+//     payload: {},
+//   }),
+// );
