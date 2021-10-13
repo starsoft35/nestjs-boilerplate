@@ -1,5 +1,14 @@
-import { Account } from 'src/accounts/entities/account.entity';
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, RelationId, ManyToOne, Generated } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  RelationId,
+  ManyToOne,
+  Generated,
+} from 'typeorm';
+
+import { Account } from '@/accounts/entities/account.entity';
 
 @Entity()
 export class App extends BaseEntity {
@@ -8,16 +17,16 @@ export class App extends BaseEntity {
 
   @Column()
   @RelationId((app: App) => app.account)
-  accountId: Number;
+  accountId: number;
 
-  @ManyToOne(() => Account, account => account.apps)
+  @ManyToOne(() => Account, (account) => account.apps)
   account: number;
 
   @Column()
   name: string;
 
   @Column()
-  @Generated("uuid")
+  @Generated('uuid')
   clientId: string;
 
   @Column()

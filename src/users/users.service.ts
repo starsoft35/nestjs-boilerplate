@@ -2,7 +2,9 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import * as bcrypt from 'bcrypt';
-import { RegisterDto } from 'src/auth/dto/register.dto';
+
+import { RegisterDto } from '@/auth/dto/register.dto';
+
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -12,7 +14,7 @@ export class UsersService extends TypeOrmCrudService<User> {
   }
 
   async registerUser(registerDto: RegisterDto) {
-    const result = await this.findOne({ where: { email: registerDto.email }})
+    const result = await this.findOne({ where: { email: registerDto.email } });
 
     if (result) {
       throw new ConflictException();
@@ -34,13 +36,3 @@ export class UsersService extends TypeOrmCrudService<User> {
     return this.repo.update(userId, { isEmailConfirmed: true });
   }
 }
-
-
-// this.eventEmitter.emit(
-//   'webhook',
-//   new WebhookEvent({
-//     name: 'user.getAll',
-//     accountId: 1,
-//     payload: {},
-//   }),
-// );

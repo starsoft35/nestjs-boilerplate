@@ -1,5 +1,7 @@
 import { ResourceWithOptions } from 'admin-bro';
-import { App } from '../../apps/entities/app.entity';
+
+import { App } from '@/apps/entities/app.entity';
+
 import { devNav } from '../navigation';
 
 const AppsResource: ResourceWithOptions = {
@@ -8,9 +10,9 @@ const AppsResource: ResourceWithOptions = {
     navigation: devNav,
     properties: {
       clientId: {
-        isVisible: false
-      }
-    }
+        isVisible: false,
+      },
+    },
   },
 };
 

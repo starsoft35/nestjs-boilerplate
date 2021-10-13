@@ -1,9 +1,10 @@
-import { Webhook } from './entities/webhook.entity';
-import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { WebhooksService } from './webhooks.service';
-import { WebhooksController } from './webhooks.controller';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { Webhook } from './entities/webhook.entity';
+import { WebhooksController } from './webhooks.controller';
+import { WebhooksService } from './webhooks.service';
 
 @Module({
   imports: [HttpModule, TypeOrmModule.forFeature([Webhook])],

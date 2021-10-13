@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { lastValueFrom } from 'rxjs';
+
 import { Webhook } from './entities/webhook.entity';
 import { WebhookEvent } from './events/webhook.event';
 
@@ -21,8 +22,11 @@ export class WebhooksService extends TypeOrmCrudService<Webhook> {
     });
 
     if (webhook && webhook.callbackUrl) {
-      const res = this.httpService.post(webhook.callbackUrl, { webhook: name, payload })
-      return lastValueFrom(res)
+      const res = this.httpService.post(webhook.callbackUrl, {
+        webhook: name,
+        payload,
+      });
+      return lastValueFrom(res);
     }
   }
 }

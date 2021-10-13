@@ -1,6 +1,8 @@
 import { ResourceWithOptions } from 'admin-bro';
+
+import { Account } from '@/accounts/entities/account.entity';
+
 import { mainNav } from '../navigation';
-import { Account } from './../../accounts/entities/account.entity';
 
 const AccountResource: ResourceWithOptions = {
   resource: Account,

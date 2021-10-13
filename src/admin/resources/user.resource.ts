@@ -1,7 +1,9 @@
+import passwordFeature from '@adminjs/passwords';
 import { ResourceWithOptions } from 'adminjs';
-import passwordFeature from '@adminjs/passwords'
 import * as bcrypt from 'bcrypt';
-import { User } from '../../users/entities/user.entity';
+
+import { User } from '@/users/entities/user.entity';
+
 import { mainNav } from '../navigation';
 
 const UserResource: ResourceWithOptions = {
@@ -9,17 +11,19 @@ const UserResource: ResourceWithOptions = {
   options: {
     properties: {
       encryptedPassword: { isVisible: false },
-      twoFactorAuthenticationSecret: { isVisible: false }
+      twoFactorAuthenticationSecret: { isVisible: false },
     },
-    navigation: mainNav
+    navigation: mainNav,
   },
-  features: [passwordFeature({
-    properties: {
-      password: 'password',
-      encryptedPassword: 'password'
-    },
-    hash: pass => bcrypt.hash(pass, 10),
-  })]
+  features: [
+    passwordFeature({
+      properties: {
+        password: 'password',
+        encryptedPassword: 'password',
+      },
+      hash: (pass) => bcrypt.hash(pass, 10),
+    }),
+  ],
 };
 
 export default UserResource;

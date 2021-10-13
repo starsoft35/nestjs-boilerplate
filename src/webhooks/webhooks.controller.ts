@@ -1,12 +1,15 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud } from '@nestjsx/crud';
-import { OnEvent } from '@nestjs/event-emitter';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { WebhooksService } from './webhooks.service';
+
+import { AuthGuard } from '@/auth/guards/auth.guard';
+import { EmailConfirmationGuard } from '@/auth/guards/email-confirmation.guard';
+
 import { CreateWebhookDto } from './dto/create-webhook.dto';
-import { WebhookEvent } from './events/webhook.event';
 import { Webhook } from './entities/webhook.entity';
+import { WebhookEvent } from './events/webhook.event';
+import { WebhooksService } from './webhooks.service';
 
 /**
  * App are used for developers
@@ -14,6 +17,7 @@ import { Webhook } from './entities/webhook.entity';
 @ApiTags('Webhooks')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
+@UseGuards(EmailConfirmationGuard)
 @Crud({
   model: {
     type: Webhook,
@@ -27,9 +31,9 @@ import { Webhook } from './entities/webhook.entity';
     join: {
       account: {
         eager: true,
-      }
-    }
-  }
+      },
+    },
+  },
 })
 @Controller('webhooks')
 export class WebhooksController {

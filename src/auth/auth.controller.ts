@@ -1,4 +1,3 @@
-import { User } from 'src/users/entities/user.entity';
 import {
   BadRequestException,
   Body,
@@ -6,7 +5,6 @@ import {
   Get,
   Post,
   Query,
-  Redirect,
   Req,
   Request,
   Res,
@@ -16,7 +14,9 @@ import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { CrudRequest, ParsedRequest } from '@nestjsx/crud';
 import { Response } from 'express';
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -38,7 +38,7 @@ export class AuthController {
   async register(@Body() registerDto: RegisterDto) {
     const user = await this.usersService.registerUser(registerDto);
     await this.authService.sendVerificationLink(user.email);
-    return user
+    return user;
   }
 
   /**
@@ -52,7 +52,7 @@ export class AuthController {
   ) {
     const email = await this.authService.decodeConfirmationToken(token);
     await this.authService.confirmEmail(req, email);
-    res.redirect(this.configService.get('EMAIL_CONFIRMATION_SUCCESS_URL'))
+    res.redirect(this.configService.get('EMAIL_CONFIRMATION_SUCCESS_URL'));
   }
 
   /**
@@ -84,7 +84,10 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @Post('auth/2fa/generate')
-  async genQrCode(@Res() response: Response, @Req() request: Request & { user: User }) {
+  async genQrCode(
+    @Res() response: Response,
+    @Req() request: Request & { user: User },
+  ) {
     const { otpauthUrl } = await this.authService.generate2FASecret(
       request.user,
     );

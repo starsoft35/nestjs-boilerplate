@@ -1,15 +1,15 @@
-import { Controller, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudController } from '@nestjsx/crud';
-import { AuthGuard } from '../auth/guards/auth.guard';
-// import { WebhookInterceptor } from '../webhooks/webhook.interceptor';
+
+import { AuthGuard } from '@/auth/guards/auth.guard';
+
 import { UserCreateDto } from './dto/user-create.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
 @ApiBearerAuth()
-// @UseInterceptors(new WebhookInterceptor('tetetetetete'))
 @UseGuards(AuthGuard)
 @Crud({
   model: {
@@ -20,17 +20,21 @@ import { UsersService } from './users.service';
     update: UserCreateDto,
     replace: UserCreateDto,
   },
-  query:{
-    join:{
+  query: {
+    join: {
       account: {
         eager: true,
-      }
-    }
-  }
+      },
+      roles: {
+        eager: true,
+      },
+      'roles.role': {
+        eager: true,
+      },
+    },
+  },
 })
 @Controller('users')
 export class UsersController implements CrudController<User> {
-  constructor(
-    public service: UsersService
-  ) { }
+  constructor(public service: UsersService) {}
 }

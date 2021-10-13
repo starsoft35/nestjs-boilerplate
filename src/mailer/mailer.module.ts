@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { AppMailerService } from './mailer.service';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { AppMailerService } from './mailer.service';
 
 @Module({
   imports: [
@@ -21,14 +21,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         //     strict: true,
         //   },
         // },
-      })
+      }),
     }),
   ],
-  providers: [
-    AppMailerService,
-  ],
-  exports: [
-    AppMailerService,
-  ]
+  providers: [AppMailerService],
+  exports: [AppMailerService],
 })
-export class AppMailerModule { }
+export class AppMailerModule {}

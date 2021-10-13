@@ -1,6 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne, BaseEntity, RelationId, AfterUpdate } from 'typeorm';
-import { Exclude } from 'class-transformer';
-import { Account } from './../../accounts/entities/account.entity';
+import { Exclude, Transform } from 'class-transformer';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Index,
+  ManyToOne,
+  BaseEntity,
+  RelationId,
+  OneToMany,
+} from 'typeorm';
+
+import { Account } from '@/accounts/entities/account.entity';
+import { UserRole } from '@/userRoles/entities/userRole.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -18,6 +29,9 @@ export class User extends BaseEntity {
   @Column()
   email: string;
 
+  @Column({ nullable: true })
+  avatar: string;
+
   @Column({ default: false })
   twoFactor: boolean;
 
@@ -28,13 +42,13 @@ export class User extends BaseEntity {
   @Column({ default: true })
   active: boolean;
 
-  @Column({ type: 'timestamptz', default: () => "now()" })
+  @Column({ type: 'timestamptz', default: () => 'now()' })
   createdAt: Date;
 
-  @Column({ type: 'timestamptz', default: () => "now()" })
+  @Column({ type: 'timestamptz', default: () => 'now()' })
   updatedAt: Date;
 
-  @Column({ type: 'timestamptz', default: () => "now()" })
+  @Column({ type: 'timestamptz', default: () => 'now()' })
   lastLogin: Date;
 
   @Column({ default: false })
@@ -44,6 +58,10 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   accountId: number;
 
-  @ManyToOne(() => Account, account => account.users)
+  @ManyToOne(() => Account, (account) => account.users)
   account: Account;
+
+  @OneToMany(() => UserRole, (userRole) => userRole.user)
+  @Transform(({ value }) => value.map((row) => row.role.name))
+  roles: UserRole[];
 }

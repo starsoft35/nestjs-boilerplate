@@ -1,11 +1,13 @@
 import { Controller, UseGuards } from '@nestjs/common';
-import { Crud, CrudController } from '@nestjsx/crud';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Crud, CrudController } from '@nestjsx/crud';
+
+import { AuthGuard } from '@/auth/guards/auth.guard';
+
 import { AccountsService } from './accounts.service';
-import { Account } from './entities/account.entity';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { Account } from './entities/account.entity';
 
 @ApiTags('Accounts')
 @ApiBearerAuth()
@@ -29,11 +31,11 @@ import { UpdateAccountDto } from './dto/update-account.dto';
       },
       webhooks: {
         eager: true,
-      }
-    }
-  }
+      },
+    },
+  },
 })
 @Controller('accounts')
 export class AccountsController implements CrudController<Account> {
-  constructor(public service: AccountsService) { }
+  constructor(public service: AccountsService) {}
 }

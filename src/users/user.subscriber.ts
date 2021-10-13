@@ -1,3 +1,4 @@
+import { EventEmitter2 } from 'eventemitter2';
 import {
   Connection,
   EntitySubscriberInterface,
@@ -6,16 +7,14 @@ import {
   RemoveEvent,
   UpdateEvent,
 } from 'typeorm';
-import { EventEmitter2 } from 'eventemitter2';
-import { WebhookEvent } from '../webhooks/events/webhook.event';
+
+import { WebhookEvent } from '@/webhooks/events/webhook.event';
+
 import { User } from './entities/user.entity';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<User> {
-  constructor(
-    connection: Connection,
-    private eventEmitter: EventEmitter2
-  ) {
+  constructor(connection: Connection, private eventEmitter: EventEmitter2) {
     connection.subscribers.push(this);
   }
 

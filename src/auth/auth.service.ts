@@ -1,14 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { CrudRequest } from '@nestjsx/crud';
 import * as bcrypt from 'bcrypt';
-import { Writable } from 'stream';
 import { authenticator } from 'otplib';
 import { toFileStream } from 'qrcode';
-import { UsersService } from '../users/users.service';
-import { User } from '../users/entities/user.entity';
-import { AppMailerService } from '../mailer/mailer.service';
-import { CrudRequest } from '@nestjsx/crud';
+import { Writable } from 'stream';
+
+import { AppMailerService } from '@/mailer/mailer.service';
+import { User } from '@/users/entities/user.entity';
+import { UsersService } from '@/users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -22,10 +23,7 @@ export class AuthService {
   /**
    * Validate user on classic login
    */
-  async validateUser(
-    email: string,
-    pass: string,
-  ) {
+  async validateUser(email: string, pass: string) {
     const user = await this.usersService.findOne({ where: { email } });
 
     if (user && (await bcrypt.compare(pass, user.password))) {
@@ -97,19 +95,24 @@ export class AuthService {
   }
 
   public sendVerificationLink(email: string) {
-    const token = this.jwtService.sign({ email }, {
-      secret: this.configService.get('JWT_SECRET'),
-      expiresIn: this.configService.get('JWT_EXPIRES')
-    });
+    const token = this.jwtService.sign(
+      { email },
+      {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: this.configService.get('JWT_EXPIRES'),
+      },
+    );
 
-    const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
+    const url = `${this.configService.get(
+      'EMAIL_CONFIRMATION_URL',
+    )}?token=${token}`;
     const text = `Welcome to the application. To confirm the email address, click here: ${url}`;
 
     return this.emailService.sendMail({
       to: email,
       subject: 'Email confirmation',
       text,
-    })
+    });
   }
 
   public async confirmEmail(req: CrudRequest, email: string) {
